@@ -9,8 +9,7 @@ you may need to download the data and store it in the root directory
 
 ## data preprocessing
 
-
 '''python
-python data.py
+    python test.py
 '''
 
