@@ -1,8 +1,8 @@
 # phenoinfer_version2
 
 <br>
-## the shared link for data
-<<<<<<< HEAD
+## download the data from the following link
+
 https://drive.google.com/open?id=1w5Shb8zNGv0E-vYurNEKWzAUoMrkHN9e
 you may need to download the data and store it in the root directory
 <br>
@@ -18,7 +18,7 @@ excucute    <br> python unsupervised_data_processing.py
 https://drive.google.com/open?id=1w5Shb8zNGv0E-vYurNEKWzAUoMrkHN9e
 <br>
 you may need to download the data and store it in the root directory
->>>>>>> f09cd5e6c190c2aa1316e351aaf9064127793a14
+
 
 ## move to /GraphSAGE/GraphSAGE
 execute     <br>   python ../small_graph/gd-G.json ../small_graph/gd-walks.txt
