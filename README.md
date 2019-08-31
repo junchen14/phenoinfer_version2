@@ -15,7 +15,6 @@ execute     <br>   python data_preprocessing.py
 excucute    <br> python unsupervised_data_processing.py
 
 
-https://drive.google.com/open?id=1w5Shb8zNGv0E-vYurNEKWzAUoMrkHN9e
 <br>
 you may need to download the data and store it in the root directory
 
@@ -26,4 +25,3 @@ execute     <br>   python ../small_graph/gd-G.json ../small_graph/gd-walks.txt
 ## move to /graphSAGE?GraphSAGE
 execute    <br>    python random_rank_predict_inner_product.py
 =======
-## data preprocessing
