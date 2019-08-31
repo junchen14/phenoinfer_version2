@@ -1,0 +1,1 @@
+cp ../data/* ../../GraphSAGE/data/

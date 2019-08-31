@@ -267,7 +267,7 @@ write the gene and disease out according to the specified data format
 
 
 def generate_features(mouse_gene_disease_association,gene_feature,disease_feature,type):
-    file=open("../data/"+type+"_train.txt","w")
+    file=open("../../GraphSAGE/data/"+type+"_train.txt","w")
     disease_gene=dict()
     count=0
 
@@ -308,9 +308,9 @@ def generate_features(mouse_gene_disease_association,gene_feature,disease_featur
         except:
             pass
 
-    with open("../data/"+type+"_disease_gene.pkl","wb") as f:
+    with open("../../GraphSAGE/data/"+type+"_disease_gene.pkl","wb") as f:
         pkl.dump(disease_gene,f)
-    with open("../data/"+type+"_gene_set.pkl","wb") as f:
+    with open("../../GraphSAGE/data/"+type+"_gene_set.pkl","wb") as f:
         pkl.dump(total_gene,f)
     print("the num of gene disease association :",str(count))
     print(" the number of total gene",len(total_gene))
@@ -322,4 +322,3 @@ generate_features(mouse_gene_disease,gene_go_feature,dis_phe,"go")
 generate_features(mouse_gene_disease,gene_uberon_feature,dis_phe,"uberon")
 generate_features(mouse_gene_disease,gene_intersection_feature,dis_phe,"intersection")
 generate_features(mouse_gene_disease,gene_union_feature,dis_phe,"union")
-
