@@ -15,10 +15,6 @@ execute     <br>   python data_preprocessing.py
 excucute    <br> python unsupervised_data_processing.py
 
 
-<br>
-you may need to download the data and store it in the root directory
-
-
 ## move to /GraphSAGE/GraphSAGE
 execute     <br>   python ../small_graph/gd-G.json ../small_graph/gd-walks.txt
 
