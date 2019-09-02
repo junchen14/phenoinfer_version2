@@ -6,7 +6,7 @@ import pickle as pkl
 from networkx.readwrite import json_graph
 from argparse import ArgumentParser
 
-from graphsage.random_rank_model_inner_product import Rank_model
+from random_rank_model_inner_product import Rank_model
 import torch
 import random
 from torch.utils.data import DataLoader

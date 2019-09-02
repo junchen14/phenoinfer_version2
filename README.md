@@ -16,8 +16,8 @@ excucute    <br> python unsupervised_data_processing.py
 
 
 ## move to /GraphSAGE/GraphSAGE
-execute     <br>   python ../small_graph/gd-G.json ../small_graph/gd-walks.txt
+execute     <br>   python utils.py ../small_graph/gd-G.json ../small_graph/gd-walks.txt
 
-## move to /graphSAGE?GraphSAGE
+## move to /GraphSAGE/GraphSAGE
 execute    <br>    python random_rank_predict_inner_product.py
 =======
