@@ -10,6 +10,9 @@ import networkx as nx
 from networkx.readwrite import json_graph
 import multiprocessing as mp
 from threading import Lock
+import gensim
+
+
 lock = Lock()
 
 version_info = list(map(int, nx.__version__.split('.')))
@@ -75,7 +78,7 @@ def load_data(prefix, normalize=True, load_walks=False):
         scaler = StandardScaler()
         scaler.fit(train_feats)
         feats = scaler.transform(feats)
-    
+
     if load_walks:
         with open(prefix + "-walks.txt","r") as fp:
             for line in fp:
@@ -132,7 +135,7 @@ def run_walk(nodes,G):
 def write_file(pair):
     with lock:
         with open(out_file, "a") as fp:
-            fp.write("\n".join([str(p[0]) + "\t" + str(p[1]) for p in pair]))
+            fp.write("\n".join([str(p[0]) + " " + str(p[1]) for p in pair]))
             fp.write("\n")
 
 
@@ -151,5 +154,6 @@ if __name__ == "__main__":
     G = G.subgraph(nodes)
     run_walk(nodes,G)
 
-
-
+    sentences=gensim.models.word2vec.LineSentence("../small_graph/gd-walks.txt")
+    model=gensim.models.Word2Vec(sentences,sg=1, min_count=1, size=100, window=3,iter=30,workers=20)
+    model.save("../small_graph/model_word2vec")

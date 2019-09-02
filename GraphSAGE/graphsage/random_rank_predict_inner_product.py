@@ -15,6 +15,7 @@ from torch.autograd import Variable
 import torch.optim as optim
 from scipy.stats import rankdata
 from numba import jit
+import gensim
 
 ''' To evaluate the embeddings, we run a logistic regression.
 Run this script after running unsupervised training.
@@ -338,25 +339,34 @@ if __name__ == '__main__':
         gene_sets=pkl.load(f)
     gene_list=[gene for gene in gene_sets]
 
-    i = 0
-    dic = dict()
-    import numpy as np
+    # i = 0
+    # dic = dict()
+    # import numpy as np
 
-    with open("../small_graph/walks-vec.txt", "r") as f:
-        for line in f.readlines():
-            if i != 0:
-                data = line.strip().split()
-                entity = data[0]
-                embedding = data[1:]
-                emb = np.asarray(embedding)
-                dic[entity] = emb
-            else:
-                i += 1
+    # with open("../small_graph/walks-vec.txt", "r") as f:
+    #     for line in f.readlines():
+    #         if i != 0:
+    #             data = line.strip().split()
+    #             entity = data[0]
+    #             embedding = data[1:]
+    #             emb = np.asarray(embedding)
+    #             dic[entity] = emb
+    #         else:
+    #             i += 1
+    #
+    #
+    # print("loading data....")
+    # G=json_graph.node_link_graph(json.load(open("../small_graph/gd-G.json")))
+    # train_ids=[n for n in G.nodes() if not G.node[n]["val"]]
 
 
-    print("loading data....")
-    G=json_graph.node_link_graph(json.load(open("../small_graph/gd-G.json")))
-    train_ids=[n for n in G.nodes() if not G.node[n]["val"]]
+
+    dic=dict()
+    word2vec_model=gensim.models.Word2Vec.load("../train_graph/model_word2vec")
+    for entity in entities:
+        dic[entity]=word2vec_model[entity]
+    print("already loaded the data")
+    print(len(dic))
 
 
     g1,d,y,test_disease,train_disease=load_data(dic,disease_genes,gene_list)
