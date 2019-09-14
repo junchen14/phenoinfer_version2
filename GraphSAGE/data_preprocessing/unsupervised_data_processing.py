@@ -9,6 +9,8 @@ axiom_file="data/axioms.lst"
 annotation_association="GraphSAGE/data/"+data_type+"_train.txt"
 disease_gene_association="GraphSAGE/data/"+data_type+"_disease_gene.pkl"
 
+entity_list=set()
+
 def generate_eneity_list():
     with open(annotation_association, "r") as f:
         for line in f.readlines():
@@ -93,7 +95,7 @@ G = generate_graph(annotation_association, disease_gene_association)
 from networkx.readwrite import json_graph
 
 graph1 = json_graph.node_link_data(G)
-with open("GraphSAGE/small_graph/"+data_type+"-gd-G.json", "w") as f:
+with open("../small_graph/"+data_type"-gd-G.json", "w") as f:
     json.dump(graph1, f)
 
 dic = dict()

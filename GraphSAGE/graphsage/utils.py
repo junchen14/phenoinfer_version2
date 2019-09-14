@@ -5,12 +5,13 @@ import random
 import json
 import sys
 import os
+import gensim
 
 import networkx as nx
 from networkx.readwrite import json_graph
 import multiprocessing as mp
 from threading import Lock
-import gensim
+
 
 
 lock = Lock()
@@ -145,7 +146,7 @@ if __name__ == "__main__":
     root_directory = sys.argv[1]
     data_type=sys.argv[2]
 
-    graph_file = root_directory+"/"+data_type+"-gd-G.txt"
+    graph_file = root_directory+"/"+data_type+"-gd-G.json"
     graph_walks = root_directory+"/"+data_type+"-gd-walks.txt"
     graph_vectors= root_directory+"/"+data_type+"-model_word2vec"
 
