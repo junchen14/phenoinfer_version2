@@ -1,23 +1,21 @@
 # phenoinfer_version2
 
 <br>
-## download the data from the following link
+# go to data directory
+## download the data from the following link into phenoifner_version2/data directory
 
 https://drive.google.com/open?id=1w5Shb8zNGv0E-vYurNEKWzAUoMrkHN9e
 you may need to download the data and store it in the root directory
 <br>
+
 ## preprocess the data
-go to the directory phenoinfer/preprocessing
-execute     <br>   python data_preprocessing.py
+## there are 5 different types of data: union, intersection, go, mp, uberon
+let us have union as example for the following operation
+
+
+execute     <br>   bash data_preprocessing.sh
 <br>
 
-## move to /GraphSAGE/data_preprocessing
-excucute    <br> python unsupervised_data_processing.py
 
-
-## move to /GraphSAGE/GraphSAGE
-execute     <br>   python utils.py ../small_graph/gd-G.json ../small_graph/gd-walks.txt
-
-## move to /GraphSAGE/GraphSAGE
-execute    <br>    python random_rank_predict_inner_product.py
-=======
+## move your current directory to /GraphSAGE/graphsage
+execute    <br>    python random_rank_predict_inner_product.py union

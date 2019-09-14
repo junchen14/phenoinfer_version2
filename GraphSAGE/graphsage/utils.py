@@ -142,9 +142,16 @@ def write_file(pair):
 if __name__ == "__main__":
     """ Run random walks """
 
-    graph_file = sys.argv[1]
-    out_file = sys.argv[2]
-    file=open(out_file,"w")
+    root_directory = sys.argv[1]
+    data_type=sys.argv[2]
+
+    graph_file = root_directory+"/"+data_type+"-gd-G.txt"
+    graph_walks = root_directory+"/"+data_type+"-gd-walks.txt"
+    graph_vectors= root_directory+"/"+data_type+"-model_word2vec"
+
+
+
+    file=open(graph_walks,"w")
     file.close()
     G_data = json.load(open(graph_file))
     G = json_graph.node_link_graph(G_data)
@@ -154,6 +161,7 @@ if __name__ == "__main__":
     G = G.subgraph(nodes)
     run_walk(nodes,G)
 
-    sentences=gensim.models.word2vec.LineSentence("../small_graph/gd-walks.txt")
+    print("start to train the word2vec models")
+    sentences=gensim.models.word2vec.LineSentence(graph_walks)
     model=gensim.models.Word2Vec(sentences,sg=1, min_count=1, size=100, window=3,iter=30,workers=20)
-    model.save("../small_graph/model_word2vec")
+    model.save(graph_vectors)

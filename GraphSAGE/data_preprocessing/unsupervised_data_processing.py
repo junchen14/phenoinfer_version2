@@ -1,10 +1,13 @@
 import networkx as nx
 import pickle as pkl
 import json
+import sys
 
-axiom_file="../data/axioms.lst"
-annotation_association="../data/union_train.txt"
-disease_gene_association="../data/union_disease_gene.pkl"
+data_type=sys.argv[1]
+
+axiom_file="data/axioms.lst"
+annotation_association="GraphSAGE/data/"+data_type+"_train.txt"
+disease_gene_association="GraphSAGE/data/"+data_type+"_disease_gene.pkl"
 
 entity_list=set()
 def generate_eneity_list():
@@ -93,7 +96,7 @@ G=generate_graph(annotation_association,disease_gene_association)
 from networkx.readwrite import json_graph
 
 graph1=json_graph.node_link_data(G)
-with open("../small_graph/gd-G.json","w") as f:
+with open("GraphSAGE/small_graph/"+data_type+"-gd-G.json","w") as f:
     json.dump(graph1,f)
 
 dic=dict()
@@ -104,9 +107,3 @@ for node in G.nodes():
     dic[node]=index
     index+=1
 print('the numberof ndoes in the graph',str(index))
-
-with open("../small_graph/gd-id_map.json","w") as f:
-    json.dump(dic,f)
-
-
-

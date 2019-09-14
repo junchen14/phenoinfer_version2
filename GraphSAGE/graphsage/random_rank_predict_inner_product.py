@@ -2,7 +2,7 @@ from __future__ import print_function
 import json
 import numpy as np
 import pickle as pkl
-
+import gensim
 from networkx.readwrite import json_graph
 from argparse import ArgumentParser
 
@@ -14,8 +14,11 @@ from torch.utils.data import TensorDataset
 from torch.autograd import Variable
 import torch.optim as optim
 from scipy.stats import rankdata
-from numba import jit
-import gensim
+import sys
+
+
+
+
 
 ''' To evaluate the embeddings, we run a logistic regression.
 Run this script after running unsupervised training.
@@ -27,23 +30,6 @@ Example:
 
 
 negative_number=20
-# def run_regression(train_embeds, train_labels, test_embeds, test_labels):
-#     np.random.seed(1)
-#     from sklearn.linear_model import SGDClassifier
-#     from sklearn.dummy import DummyClassifier
-#     from sklearn.metrics import f1_score
-#     from sklearn.multioutput import MultiOutputClassifier
-#     dummy = MultiOutputClassifier(DummyClassifier())
-#     dummy.fit(train_embeds, train_labels)
-#     log = MultiOutputClassifier(SGDClassifier(loss="log"), n_jobs=10)
-#     log.fit(train_embeds, train_labels)
-#
-#     f1 = 0
-#     for i in range(test_labels.shape[1]):
-#         print("F1 score", f1_score(test_labels[:, i], log.predict(test_embeds)[:, i], average="micro"))
-#     for i in range(test_labels.shape[1]):
-#         print("Random baseline F1 score",
-#               f1_score(test_labels[:, i], dummy.predict(test_embeds)[:, i], average="micro"))
 
 
 def negative_sampling(disease_gene,gene_set,central_disease):
@@ -129,10 +115,10 @@ def generate_train_data(embed_dic,disease_gene,gene_set,disease_set):
     return g1, d,y
 
 
-def load_data(embed_dic,disease_gene,gene_set):
+def load_data(embed_dic,disease_gene,gene_set,train_diseases):
 
     disease_set=[key for key in disease_gene.keys()]
-    train_diseases=disease_set[:int(len(disease_genes)*0.8)]
+    #train_diseases=disease_set[:int(len(disease_genes)*0.8)]
     test_diseases=dict()
     for disease in disease_gene.keys():
         if disease in train_diseases:
@@ -322,7 +308,7 @@ if __name__ == '__main__':
     # data_type = args.data_type
     # data_dir = args.embed_dir
 
-    data_type="union"
+    data_type=sys.argv[1]
     #data_dir="../unsup-gene_disease/graphsage_mean_small_0.000010"
 
 
@@ -339,11 +325,14 @@ if __name__ == '__main__':
         gene_sets=pkl.load(f)
     gene_list=[gene for gene in gene_sets]
 
+
+
+
     # i = 0
     # dic = dict()
     # import numpy as np
-
-    # with open("../small_graph/walks-vec.txt", "r") as f:
+    #
+    # with open("../"+data_type+"_graph/walks-vec.txt", "r") as f:
     #     for line in f.readlines():
     #         if i != 0:
     #             data = line.strip().split()
@@ -353,23 +342,42 @@ if __name__ == '__main__':
     #             dic[entity] = emb
     #         else:
     #             i += 1
-    #
-    #
-    # print("loading data....")
-    # G=json_graph.node_link_graph(json.load(open("../small_graph/gd-G.json")))
-    # train_ids=[n for n in G.nodes() if not G.node[n]["val"]]
 
-
+    with open("../data/union_disease_gene.pkl","rb") as f:
+        disease_gene=pkl.load(f)
+    entities=set()
+    for disease in disease_gene.keys():
+        entities.add(disease)
+        for gene in disease_gene[disease]:
+            entities.add(gene)
+    for gene in gene_list:
+        entities.add(gene)
 
     dic=dict()
-    word2vec_model=gensim.models.Word2Vec.load("../train_graph/model_word2vec")
+    word2vec_model=gensim.models.Word2Vec.load("../small_graph"+data_type+"-model_word2vec")
     for entity in entities:
         dic[entity]=word2vec_model[entity]
     print("already loaded the data")
     print(len(dic))
 
 
-    g1,d,y,test_disease,train_disease=load_data(dic,disease_genes,gene_list)
+
+
+
+    with open("../small_graph/train_disease.pkl","rb") as f:
+        train_disease=pkl.load(f)
+
+
+    # with open("../test_graph/test_disease.pkl") as f:
+    #     test_disease=pkl.load(f)
+
+
+    print("loading data....")
+    G=json_graph.node_link_graph(json.load(open("../small_graph/"+data_type+"-gd-G.json")))
+    train_ids=[n for n in G.nodes() if not G.node[n]["val"]]
+
+
+    g1,d,y,test_disease,train_disease   =  load_data(dic,disease_genes,gene_list,train_disease)
 
     print("g1",g1.shape)
 
@@ -391,73 +399,7 @@ if __name__ == '__main__':
             auc,rank=evaluation(model,test_disease,dic,gene_list)
             calculate_auc(auc)
             if rank<performance:
-                torch.save(model, "../model/"+"inner__" + str(rank) + ".pt")
+                torch.save(model, "../model/"+data_type+"__" + str(rank) + ".pt")
 
         model,loss_value=train(model,opt,criterion)
         print("the loss is:  ",str(loss_value))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # train_embeds = embeds[[id_map[id] for id in train_ids]]
-
-
-
-
-
-
-
-
-    # print("Loading data...")
-    # G = json_graph.node_link_graph(json.load(open(dataset_dir + "/ppi-G.json")))
-    # labels = json.load(open(dataset_dir + "/ppi-class_map.json"))
-    # labels = {int(i): l for i, l in labels.iteritems()}
-    #
-    # train_ids = [n for n in G.nodes() if not G.node[n]['val'] and not G.node[n]['test']]
-    # test_ids = [n for n in G.nodes() if G.node[n][setting]]
-    # train_labels = np.array([labels[i] for i in train_ids])
-    # if train_labels.ndim == 1:
-    #     train_labels = np.expand_dims(train_labels, 1)
-    # test_labels = np.array([labels[i] for i in test_ids])
-    # print("running", data_dir)
-    #
-    # if data_dir == "feat":
-    #     print("Using only features..")
-    #     feats = np.load(dataset_dir + "/ppi-feats.npy")
-    #     ## Logistic gets thrown off by big counts, so log transform num comments and score
-    #     feats[:, 0] = np.log(feats[:, 0] + 1.0)
-    #     feats[:, 1] = np.log(feats[:, 1] - min(np.min(feats[:, 1]), -1))
-    #     feat_id_map = json.load(open(dataset_dir + "/ppi-id_map.json"))
-    #     feat_id_map = {int(id): val for id, val in feat_id_map.iteritems()}
-    #     train_feats = feats[[feat_id_map[id] for id in train_ids]]
-    #     test_feats = feats[[feat_id_map[id] for id in test_ids]]
-    #     print("Running regression..")
-    #     from sklearn.preprocessing import StandardScaler
-    #
-    #     scaler = StandardScaler()
-    #     scaler.fit(train_feats)
-    #     train_feats = scaler.transform(train_feats)
-    #     test_feats = scaler.transform(test_feats)
-    #     run_regression(train_feats, train_labels, test_feats, test_labels)
-    # else:
-    #     embeds = np.load(data_dir + "/val.npy")
-    #     id_map = {}
-    #     with open(data_dir + "/val.txt") as fp:
-    #         for i, line in enumerate(fp):
-    #             id_map[int(line.strip())] = i
-    #     train_embeds = embeds[[id_map[id] for id in train_ids]]
-    #     test_embeds = embeds[[id_map[id] for id in test_ids]]
-    #
-    #     print("Running regression..")
-    #     run_regression(train_embeds, train_labels, test_embeds, test_labels)
