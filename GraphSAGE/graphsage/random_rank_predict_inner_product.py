@@ -343,7 +343,7 @@ if __name__ == '__main__':
     #         else:
     #             i += 1
 
-    with open("../data/union_disease_gene.pkl","rb") as f:
+    with open("../data/"+data_type+"_disease_gene.pkl","rb") as f:
         disease_gene=pkl.load(f)
     entities=set()
     for disease in disease_gene.keys():
