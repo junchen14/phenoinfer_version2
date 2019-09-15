@@ -135,7 +135,7 @@ def run_walk(nodes,G):
 
 def write_file(pair):
     with lock:
-        with open(out_file, "a") as fp:
+        with open(graph_walks, "a") as fp:
             fp.write("\n".join([str(p[0]) + " " + str(p[1]) for p in pair]))
             fp.write("\n")
 
