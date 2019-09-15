@@ -233,27 +233,10 @@ def evaluation(model_,evaluation_data,embed_dic_,gene_set_):
         test_results = sorted(test_result.items(), key=lambda kv: kv[1],reverse=True)
         #
         # test_result=sorted(model_.predict(testing_list).data,reverse=True)
-        with open("../test_overfitting/"+str(i)+".txt","w") as f:
+        with open("../prediction_result/"+str(i)+".txt","w") as f:
             for data in test_results:
                 f.write(str(data[0])+"   "+str(data[1])+"\n")
         i+=1
-
-
-
-
-    # top_k(validation_rank,10)
-    # top_k(validation_rank,30)
-    # top_k(validation_rank,50)
-    # top_k(validation_rank,100)
-    # top_k(validation_rank,200)
-    #
-    # average_score=[]
-    # for disease in validation_rank.keys():
-    #     average_score.extend(validation_rank[disease])
-    # mean_rank=np.mean(average_score)
-    #
-    # print("the mean rank of the whole data is ",str(mean_rank))
-    # return validation_rank,mean_rank
 
 
 
@@ -330,24 +313,44 @@ if __name__ == '__main__':
         gene_sets=pkl.load(f)
     gene_list=[gene for gene in gene_sets]
 
-    i = 0
-    dic = dict()
-    import numpy as np
+    # i = 0
+    # dic = dict()
+    # import numpy as np
+    #
+    # with open("../small_graph/"+data_type+"-walks-vec.txt", "r") as f:
+    #     for line in f.readlines():
+    #         if i != 0:
+    #             data = line.strip().split()
+    #             entity = data[0]
+    #             embedding = data[1:]
+    #             emb = np.asarray(embedding)
+    #             dic[entity] = emb
+    #         else:
+    #             i += 1
 
-    with open("../small_graph/walks-vec.txt", "r") as f:
-        for line in f.readlines():
-            if i != 0:
-                data = line.strip().split()
-                entity = data[0]
-                embedding = data[1:]
-                emb = np.asarray(embedding)
-                dic[entity] = emb
-            else:
-                i += 1
+    with open("../data/"+data_type+"_disease_gene.pkl","rb") as f:
+        disease_gene=pkl.load(f)
+    entities=set()
+    for disease in disease_gene.keys():
+        entities.add(disease)
+        for gene in disease_gene[disease]:
+            entities.add(gene)
+    for gene in gene_list:
+        entities.add(gene)
+
+    dic=dict()
+    word2vec_model=gensim.models.Word2Vec.load("../small_graph"+data_type+"-model_word2vec")
+    for entity in entities:
+        dic[entity]=word2vec_model[entity]
+    print("already loaded the data")
+    print(len(dic))
+
+
+    ###################
 
 
     print("loading data....")
-    G=json_graph.node_link_graph(json.load(open("../small_graph/gd-G.json")))
+    G=json_graph.node_link_graph(json.load(open("../small_graph/"+data_type+"-gd-G.json")))
     train_ids=[n for n in G.nodes() if not G.node[n]["val"]]
 
 
@@ -362,12 +365,15 @@ if __name__ == '__main__':
     print("the feature number is",feature_num)
     model=torch.load("../model/__356.89770354906057.pt")
 
-    test_disease=test_disease[:6]
+    #########
+
+    here you input the set of human phenotypes
+
+    #########
+
+    # test_disease=test_disease[:6]
+    test_disease=dict()
+    test["disease"]=["pheno1","pheno2","pheno3"]
 
 
     evaluation(model,test_disease,dic,gene_list)
-
-
-
-
-
