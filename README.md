@@ -19,3 +19,10 @@ execute     <br>   bash data_preprocessing.sh
 
 ## move your current directory to /GraphSAGE/graphsage
 execute    <br>    python random_rank_predict_inner_product.py union
+
+
+## prediction part
+go to the directory of GraphSAGE/graphsage
+
+### but please modify the comment part in the code
+execute    <br>    python test_overfitting.py
