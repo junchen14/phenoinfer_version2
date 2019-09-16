@@ -86,6 +86,8 @@ def generate_graph(association1, association2):
                 G.edges[str(key), str(gene)]["type"] = "EquivalentTo"
                 G.nodes[key]["val"] = False
                 G.nodes[gene]["val"] = False
+    with open("../"+data_type+"_graph/train_disease.pkl","wb") as f:
+        pkl.dump(train_disease,f)
 
 
     return G
