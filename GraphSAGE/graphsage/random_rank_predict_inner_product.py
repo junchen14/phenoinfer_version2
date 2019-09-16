@@ -364,7 +364,7 @@ if __name__ == '__main__':
 
 
 
-    with open("../small_graph/train_disease.pkl","rb") as f:
+    with open("../small_graph/"+data_type+"_train_disease.pkl","rb") as f:
         train_disease=pkl.load(f)
 
 
