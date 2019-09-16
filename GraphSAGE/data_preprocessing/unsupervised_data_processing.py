@@ -70,7 +70,7 @@ def generate_graph(association1, association2):
 
     with open(association2, "rb") as f:
         disease_gene = pkl.load(f)
-    diseases = [disease_gene.keys()]
+    diseases = [data for data in disease_gene.keys()]
     import random
     random.shuffle(diseases)
     train_disease = diseases[:int(len(diseases) * 0.8)]
@@ -97,7 +97,7 @@ G = generate_graph(annotation_association, disease_gene_association)
 from networkx.readwrite import json_graph
 
 graph1 = json_graph.node_link_data(G)
-with open("../small_graph/"+data_type"-gd-G.json", "w") as f:
+with open("../small_graph/"+data_type+"-gd-G.json", "w") as f:
     json.dump(graph1, f)
 
 dic = dict()
