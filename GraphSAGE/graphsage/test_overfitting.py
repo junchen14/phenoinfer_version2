@@ -14,7 +14,11 @@ from torch.utils.data import TensorDataset
 from torch.autograd import Variable
 import torch.optim as optim
 from scipy.stats import rankdata
-from numba import jit
+import os
+
+
+
+N_WALKS=50
 
 ''' To evaluate the embeddings, we run a logistic regression.
 Run this script after running unsupervised training.
@@ -278,10 +282,38 @@ def calculate_auc(rank_result):
     auc=ranked_auc(rank_list)
     print("the auc is :",str(auc))
 
+def write_file(pair):
+    with lock:
+        with open("walks.txt", "a") as fp:
+            fp.write("\n".join([str(p[0]) + " " + str(p[1]) for p in pair]))
+            fp.write("\n")
+
+def run_random_walks(G, nodes, num_walks=N_WALKS):
+
+    pairs = []
+    for count, node in enumerate(nodes):
+        if G.degree(node) == 0:
+            continue
+        for i in range(num_walks):
+            curr_node = node
+            for j in range(WALK_LEN):
+                next_node = random.choice(list(G.neighbors(curr_node)))
+                # self co-occurrences are useless
+                if curr_node != node:
+                    pairs.append((node,curr_node))
+                curr_node = next_node
+    write_file(pairs)
 
 
+def update_word2vec(disease, my_model,graph):
+    run_random_walks(graph, disease)
+    sentences =gensim.models.word2vec.LineSentence('walks.txt')
+    my_model.build_vocab(sentences, update=True)
 
+    my_model.train(sentences,total_examples=mymodel.corpus_count, epochs=mymodel.iter)
+    os.remove("walks.txt")
 
+    return my_model
 
 
 if __name__ == '__main__':
@@ -313,20 +345,7 @@ if __name__ == '__main__':
         gene_sets=pkl.load(f)
     gene_list=[gene for gene in gene_sets]
 
-    # i = 0
-    # dic = dict()
-    # import numpy as np
-    #
-    # with open("../small_graph/"+data_type+"-walks-vec.txt", "r") as f:
-    #     for line in f.readlines():
-    #         if i != 0:
-    #             data = line.strip().split()
-    #             entity = data[0]
-    #             embedding = data[1:]
-    #             emb = np.asarray(embedding)
-    #             dic[entity] = emb
-    #         else:
-    #             i += 1
+    # load all the entities and also the word2vec nodel
 
     with open("../data/"+data_type+"_disease_gene.pkl","rb") as f:
         disease_gene=pkl.load(f)
@@ -340,6 +359,34 @@ if __name__ == '__main__':
 
     dic=dict()
     word2vec_model=gensim.models.Word2Vec.load("../small_graph"+data_type+"-model_word2vec")
+    G=json_graph.node_link_graph(json.load(open("../small_graph/"+data_type+"-gd-G.json")))
+
+
+
+    # input the test disease and also put it into the whole entity list
+    test_disease=dict()
+    test["disease"]=["pheno1","pheno2","pheno3"]
+
+    # update the grpah and update the vocabulary
+
+    unseen_disease=[]
+    for key in test_disease.keys():
+        if key not in entities:
+            unseen_disease.append(key)
+            for value in test_disease[key]:
+                G.add_edge(key.strip(),value.strip())
+                entities.add(key.strip())
+                entities.add(value.strip())
+
+
+
+    word2vec_model=update_word2vec(unseen_disease,word2vec_model,G):
+
+    # test if the input disease is in the training disease, if no, then we need to retrain the word2vec model_
+
+
+
+
     for entity in entities:
         dic[entity]=word2vec_model[entity]
     print("already loaded the data")
@@ -349,9 +396,6 @@ if __name__ == '__main__':
     ###################
 
 
-    print("loading data....")
-    G=json_graph.node_link_graph(json.load(open("../small_graph/"+data_type+"-gd-G.json")))
-    train_ids=[n for n in G.nodes() if not G.node[n]["val"]]
 
 
     g1,d,y,test_disease,train_disease=load_data(dic,disease_genes,gene_list)
@@ -363,7 +407,7 @@ if __name__ == '__main__':
 
     feature_num=g1.shape[1]
     print("the feature number is",feature_num)
-    model=torch.load("../model/__356.89770354906057.pt")
+    model=torch.load("../model/"+data_type+"__best_performance.pt")
 
     #########
 
@@ -371,9 +415,7 @@ if __name__ == '__main__':
 
     #########
 
-    # test_disease=test_disease[:6]
-    test_disease=dict()
-    test["disease"]=["pheno1","pheno2","pheno3"]
+
 
 
     evaluation(model,test_disease,dic,gene_list)

@@ -393,13 +393,15 @@ if __name__ == '__main__':
     epoches=1000
 
     performance=1000000
+
     for epoch in range(epoches):
         g1, d, y= generate_train_data(dic,disease_genes,gene_list,train_disease)
         if epoch%100==5:
             auc,rank=evaluation(model,test_disease,dic,gene_list)
             calculate_auc(auc)
             if rank<performance:
-                torch.save(model, "../model/"+data_type+"__" + str(rank) + ".pt")
+                torch.save(model, "../model/"+data_type+"__best_performance.pt")
+                performance=rank
 
         model,loss_value=train(model,opt,criterion)
         print("the loss is:  ",str(loss_value))
