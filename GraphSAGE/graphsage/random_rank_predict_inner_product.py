@@ -297,16 +297,7 @@ def calculate_auc(rank_result):
 
 
 if __name__ == '__main__':
-    # parser = ArgumentParser("Run evaluation on PPI data.")
-    # parser.add_argument("data_type", help="Path to directory containing the dataset.")
-    # parser.add_argument("embed_dir",
-    #                     help="Path to directory containing the learned node embeddings. Set to 'feat' for raw features.")
-    # # parser.add_argument("setting", help="Either val or test.")
-    # args = parser.parse_args()
-    #
-    #
-    # data_type = args.data_type
-    # data_dir = args.embed_dir
+
 
     data_type=sys.argv[1]
     #data_dir="../unsup-gene_disease/graphsage_mean_small_0.000010"
