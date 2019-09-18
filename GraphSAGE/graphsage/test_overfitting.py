@@ -18,7 +18,7 @@ import os
 
 import multiprocessing as mp
 from threading import Lock
-
+import gensim
 lock = Lock()
 
 
@@ -369,7 +369,7 @@ if __name__ == '__main__':
 
     # input the test disease and also put it into the whole entity list
     test_disease=dict()
-    test["disease"]=["pheno1","pheno2","pheno3"]
+    test_disease["disease"]=["pheno1","pheno2","pheno3"]
 
     # update the grpah and update the vocabulary
 
@@ -398,15 +398,6 @@ if __name__ == '__main__':
     ###################
 
 
-    g1,d,y,test_disease,train_disease=load_data(dic,disease_genes,gene_list)
-
-    print("g1",g1.shape)
-
-    print("d",d.shape)
-    print("y",y.shape)
-
-    feature_num=g1.shape[1]
-    print("the feature number is",feature_num)
     model=torch.load("../model/"+data_type+"__best_performance.pt")
 
     #########
@@ -416,6 +407,4 @@ if __name__ == '__main__':
     #########
 
 
-
-
-    evaluation(model,test_disease,dic,gene_list)
+    evaluatsion(model,test_disease,dic,gene_list)
