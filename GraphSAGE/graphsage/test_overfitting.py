@@ -16,9 +16,11 @@ import torch.optim as optim
 from scipy.stats import rankdata
 import os
 
+import multiprocessing as mp
+from threading import Lock
 
+lock = Lock()
 
-N_WALKS=50
 
 ''' To evaluate the embeddings, we run a logistic regression.
 Run this script after running unsupervised training.
@@ -225,6 +227,7 @@ def evaluation(model_,evaluation_data,embed_dic_,gene_set_):
         for gene in gene_set_:
             gene_vec = look_up_embed(embed_dic_,gene)
             testing_list.append([gene_vec,disease_vec])
+
             test_dic[gene]=[gene_vec,disease_vec]
 
         test_result=dict()
@@ -232,12 +235,13 @@ def evaluation(model_,evaluation_data,embed_dic_,gene_set_):
             testing_list=convert_to_torch_format(test_dic[key])
 
             testing_list=Variable(testing_list)
+            testing_list=testing_list.view(1,2,-1)
             test_result[key]=model_.predict(testing_list).data
 
         test_results = sorted(test_result.items(), key=lambda kv: kv[1],reverse=True)
         #
         # test_result=sorted(model_.predict(testing_list).data,reverse=True)
-        with open("../prediction_result/"+str(i)+".txt","w") as f:
+        with open("../prediction_result/"+str(disease)+".txt","w") as f:
             for data in test_results:
                 f.write(str(data[0])+"   "+str(data[1])+"\n")
         i+=1
@@ -385,8 +389,6 @@ if __name__ == '__main__':
     # test if the input disease is in the training disease, if no, then we need to retrain the word2vec model_
 
 
-
-
     for entity in entities:
         dic[entity]=word2vec_model[entity]
     print("already loaded the data")
@@ -394,8 +396,6 @@ if __name__ == '__main__':
 
 
     ###################
-
-
 
 
     g1,d,y,test_disease,train_disease=load_data(dic,disease_genes,gene_list)
