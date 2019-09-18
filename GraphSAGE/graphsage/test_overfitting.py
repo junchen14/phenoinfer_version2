@@ -134,38 +134,7 @@ def generate_train_data(embed_dic,disease_gene,gene_set,disease_set):
     return g1, d,y
 
 
-def load_data(embed_dic,disease_gene,gene_set):
 
-    disease_set=[key for key in disease_gene.keys()]
-    train_diseases=disease_set[:int(len(disease_genes)*0.8)]
-    test_diseases=dict()
-    for disease in disease_gene.keys():
-        if disease in train_diseases:
-            # genes=disease_gene[disease]
-            # for gene in genes:
-            #     negative_genes=negative_sampling(disease_gene,gene_set,disease)
-            #     positive_gene,negative_gene,label=generate_label(gene,negative_genes)
-            #
-            #
-            #     positive_gene= generate_embedding(embeddings,id_maping,positive_gene)
-            #
-            #     negative_gene=generate_embedding(embeddings,id_maping,negative_gene)
-            #     disease_embedding=generate_embedding(embeddings,id_maping,[disease]*negative_number)
-            #
-            #     g1.extend(positive_gene)
-            #     g2.extend(negative_gene)
-            #     d.extend(disease_embedding)
-            #     y.extend(label)
-            pass
-
-        else:
-            test_diseases[disease]=disease_gene[disease]
-    g1,d,y=generate_train_data(embed_dic,disease_gene,gene_set,train_diseases)
-
-
-
-
-    return g1,d,y,test_diseases,train_diseases
 
 
 def train(model_,opt_,criterion_):
