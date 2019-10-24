@@ -19,6 +19,7 @@ bash data_preprocessing.sh
 
 ## move your current directory to /GraphSAGE/graphsage
 execute
+
 <code>
 python random_rank_predict_inner_product.py union
 </code>
