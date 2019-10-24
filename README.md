@@ -12,9 +12,9 @@ you may need to download the data and store it in the root directory
 ## there are 5 different types of data: union, intersection, go, mp, uberon
 let us have union as example for the following operation
 
-'''python
+<code>
 bash data_preprocessing.sh
-'''
+</code>
 
 
 ## move your current directory to /GraphSAGE/graphsage
