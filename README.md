@@ -12,23 +12,22 @@ you may need to download the data and store it in the root directory
 ## there are 5 different types of data: union, intersection, go, mp, uberon
 let us have union as example for the following operation
 then execute
-<code>
-sh data_preprocessing.sh
-</code>
+
+  sh data_preprocessing.sh
+
 
 
 ## move your current directory to /GraphSAGE/graphsage
 execute
 
-<code>
-python random_rank_predict_inner_product.py union
-</code>
+  python random_rank_predict_inner_product.py union
+
 
 ## prediction part
 go to the directory of GraphSAGE/graphsage
 
 ### but please modify the comment part in the code
 execute    
-<code> 
-python test_overfitting.py
-</code>
+
+  python test_overfitting.py
+
