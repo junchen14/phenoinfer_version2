@@ -32,3 +32,8 @@ execute
     python test_overfitting.py
 
 ## the main embedding learning process
+## the model sructure
+<div class="product-image-wrapper">
+    <img class="product-image"
+         src="f1.png" />
+</div>
