@@ -23,13 +23,6 @@ execute
     python random_rank_predict_inner_product.py union
 
 
-## prediction part
-go to the directory of GraphSAGE/graphsage
-
-### but please modify the comment part in the code
-execute    
-
-    python test_overfitting.py
 
 ## the main embedding learning process
 
