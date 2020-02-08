@@ -1,7 +1,7 @@
 # phenoinfer_version2
 
 <br>
-let your current directory as /data
+let your current directory in phenoinfer_version2/data \
 ## download the data from the following link into phenoifner_version2/data directory
 
 https://drive.google.com/open?id=1w5Shb8zNGv0E-vYurNEKWzAUoMrkHN9e
