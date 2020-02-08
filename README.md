@@ -18,7 +18,7 @@ then execute
 
 
 ## move your current directory to /GraphSAGE/graphsage
-run    python random_rank_predict_inner_product.py union
+    python random_rank_predict_inner_product.py union
 
 
 
